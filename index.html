@@ -3,361 +3,50 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reproductor de música</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; media-src 'self' blob:; style-src 'self' 'unsafe-inline'; script-src 'self'">
+  <title>Reproductor</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
     body {
-      min-height: 100vh;
-      margin: 0;
-      display: grid;
-      place-items: center;
-      background: #f1f3f8;
-      font-family: Arial, sans-serif;
-      color: #202438;
+      max-width: 360px;
+      margin: 48px auto;
+      padding: 0 16px;
+      font-family: system-ui, sans-serif;
+      color: #222;
     }
 
-    .reproductor {
-      width: min(340px, calc(100% - 32px));
-      padding: 24px;
-      border-radius: 16px;
-      background: white;
-      text-align: center;
-      box-shadow: 0 8px 24px #20243818;
-    }
-
-    .portada {
-      height: 220px;
-      margin-bottom: 20px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #f8b195, #f67280, #c06c84);
-      transition: background 0.4s;
-    }
-
-    .portada.sonando {
-      animation: latido 1.6s ease-in-out infinite;
-    }
-
-    @keyframes latido {
-      50% { transform: scale(1.02); }
-    }
-
-    h1 {
-      margin: 0 0 8px;
-      font-size: 22px;
-      overflow-wrap: anywhere;
-    }
-
-    p {
-      margin: 0 0 20px;
-      color: #777b8c;
-    }
-
-    audio {
-      display: none;
-    }
-
-    .progreso {
-      width: 100%;
-      accent-color: #f67280;
-    }
-
-    .tiempos {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 16px;
-      font-size: 13px;
-      color: #777b8c;
-    }
-
-    .controles {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 16px;
-    }
-
-    button {
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
-      background: #f1f3f8;
-      color: #202438;
-      width: 44px;
-      height: 44px;
-      font-size: 18px;
-    }
-
-    button:disabled {
-      opacity: 0.4;
-      cursor: default;
-    }
-
-    #btn-play {
-      width: 60px;
-      height: 60px;
-      font-size: 24px;
-      background: #f67280;
-      color: white;
-    }
-
-    .volumen {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 16px;
-      font-size: 14px;
-    }
-
-    .volumen input {
-      flex: 1;
-      accent-color: #f67280;
-    }
-
-    .cargar {
-      display: inline-block;
-      padding: 10px 16px;
-      border-radius: 8px;
-      background: #202438;
-      color: white;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    .cargar input {
-      display: none;
-    }
-
-    .lista {
-      list-style: none;
-      margin: 16px 0 0;
-      padding: 0;
-      text-align: left;
-      max-height: 160px;
-      overflow-y: auto;
-    }
-
-    .lista li {
-      padding: 8px 10px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 14px;
-      overflow-wrap: anywhere;
-    }
-
-    .lista li:hover {
-      background: #f1f3f8;
-    }
-
-    .lista li.activa {
-      background: #fde4e8;
-      font-weight: bold;
-    }
+    h1 { margin: 0; font-size: 24px; font-weight: 600; }
+    p { margin: 4px 0 24px; font-size: 14px; color: #888; }
+    input[type="range"] { width: 100%; accent-color: #222; }
+    button { font: inherit; padding: 6px 12px; border: 1px solid #222; background: none; cursor: pointer; }
+    button:disabled { opacity: 0.3; cursor: default; }
+    ol { padding-left: 20px; font-size: 14px; }
+    li { padding: 4px 0; cursor: pointer; }
+    .activa { font-weight: 600; }
   </style>
 </head>
 <body>
-  <main class="reproductor">
-    <div class="portada" id="portada" aria-hidden="true"></div>
-    <h1 id="titulo">Nombre de la canción</h1>
-    <p id="artista">Nombre del artista</p>
+  <h1 id="titulo">Sin canción</h1>
+  <p id="artista">Añade archivos de audio para empezar</p>
 
-    <audio id="audio"></audio>
+  <audio id="audio"></audio>
 
-    <input class="progreso" id="progreso" type="range" min="0" max="100" value="0" step="0.1"
-           aria-label="Progreso de la canción" disabled>
-    <div class="tiempos">
-      <span id="tiempo-actual">0:00</span>
-      <span id="duracion">0:00</span>
-    </div>
+  <input id="progreso" type="range" min="0" max="100" value="0" step="0.1" aria-label="Progreso" disabled>
+  <p><span id="tiempo-actual">0:00</span> / <span id="duracion">0:00</span></p>
 
-    <div class="controles">
-      <button id="btn-anterior" aria-label="Anterior" disabled>⏮</button>
-      <button id="btn-play" aria-label="Reproducir" disabled>▶</button>
-      <button id="btn-siguiente" aria-label="Siguiente" disabled>⏭</button>
-    </div>
+  <p>
+    <button id="btn-anterior" disabled>Anterior</button>
+    <button id="btn-play" disabled>Reproducir</button>
+    <button id="btn-siguiente" disabled>Siguiente</button>
+  </p>
 
-    <div class="volumen">
-      <span aria-hidden="true">🔊</span>
-      <input id="volumen" type="range" min="0" max="1" step="0.01" value="0.8" aria-label="Volumen">
-    </div>
+  <p>Volumen</p>
+  <input id="volumen" type="range" min="0" max="1" step="0.01" value="0.8" aria-label="Volumen">
 
-    <label class="cargar">
-      Añadir canciones
-      <input id="archivos" type="file" accept="audio/*" multiple>
-    </label>
+  <p><button id="btn-anadir">Añadir canciones</button></p>
+  <input id="archivos" type="file" accept="audio/*" multiple hidden>
 
-    <ul class="lista" id="lista"></ul>
-  </main>
+  <ol id="lista"></ol>
 
-  <script>
-    const audio = document.getElementById("audio");
-    const portada = document.getElementById("portada");
-    const titulo = document.getElementById("titulo");
-    const artista = document.getElementById("artista");
-    const progreso = document.getElementById("progreso");
-    const tiempoActual = document.getElementById("tiempo-actual");
-    const duracion = document.getElementById("duracion");
-    const btnPlay = document.getElementById("btn-play");
-    const btnAnterior = document.getElementById("btn-anterior");
-    const btnSiguiente = document.getElementById("btn-siguiente");
-    const volumen = document.getElementById("volumen");
-    const archivos = document.getElementById("archivos");
-    const lista = document.getElementById("lista");
-
-    const portadas = [
-      "linear-gradient(135deg, #f8b195, #f67280, #c06c84)",
-      "linear-gradient(135deg, #a8e6cf, #3fb8af, #2b6777)",
-      "linear-gradient(135deg, #ffd3a5, #fd6585, #6c5b7b)",
-      "linear-gradient(135deg, #c3cfe2, #7f7fd5, #4a47a3)",
-      "linear-gradient(135deg, #fceabb, #f8b500, #e8710a)"
-    ];
-
-    const canciones = [];
-    let indiceActual = -1;
-
-    // Convierte segundos a formato m:ss
-    function formatearTiempo(segundos) {
-      if (!isFinite(segundos)) return "0:00";
-      const min = Math.floor(segundos / 60);
-      const seg = Math.floor(segundos % 60).toString().padStart(2, "0");
-      return `${min}:${seg}`;
-    }
-
-    // "Artista - Canción.mp3" -> { artista, titulo }
-    function leerNombre(nombreArchivo) {
-      const sinExtension = nombreArchivo.replace(/\.[^.]+$/, "");
-      const partes = sinExtension.split(" - ");
-      if (partes.length >= 2) {
-        return { artista: partes[0].trim(), titulo: partes.slice(1).join(" - ").trim() };
-      }
-      return { artista: "Artista desconocido", titulo: sinExtension };
-    }
-
-    function pintarLista() {
-      lista.innerHTML = "";
-      canciones.forEach((cancion, i) => {
-        const li = document.createElement("li");
-        li.textContent = `${cancion.titulo} — ${cancion.artista}`;
-        li.classList.toggle("activa", i === indiceActual);
-        li.addEventListener("click", () => cargarCancion(i, true));
-        lista.appendChild(li);
-      });
-    }
-
-    function actualizarBotones() {
-      const hayCanciones = canciones.length > 0;
-      btnPlay.disabled = !hayCanciones;
-      progreso.disabled = !hayCanciones;
-      btnAnterior.disabled = canciones.length < 2;
-      btnSiguiente.disabled = canciones.length < 2;
-    }
-
-    function cargarCancion(i, reproducir) {
-      indiceActual = i;
-      const cancion = canciones[i];
-      audio.src = cancion.url;
-      titulo.textContent = cancion.titulo;
-      artista.textContent = cancion.artista;
-      portada.style.background = portadas[i % portadas.length];
-      progreso.value = 0;
-      tiempoActual.textContent = "0:00";
-      pintarLista();
-      if (reproducir) audio.play();
-    }
-
-    function alternarReproduccion() {
-      if (indiceActual === -1) return;
-      if (audio.paused) {
-        audio.play();
-      } else {
-        audio.pause();
-      }
-    }
-
-    function siguiente() {
-      if (canciones.length === 0) return;
-      cargarCancion((indiceActual + 1) % canciones.length, true);
-    }
-
-    function anterior() {
-      if (canciones.length === 0) return;
-      // Si ya han pasado 3 s, vuelve al inicio de la canción actual
-      if (audio.currentTime > 3) {
-        audio.currentTime = 0;
-        return;
-      }
-      cargarCancion((indiceActual - 1 + canciones.length) % canciones.length, true);
-    }
-
-    // Añadir canciones desde el dispositivo
-    archivos.addEventListener("change", () => {
-      const estabaVacia = canciones.length === 0;
-      for (const archivo of archivos.files) {
-        canciones.push({ ...leerNombre(archivo.name), url: URL.createObjectURL(archivo) });
-      }
-      archivos.value = "";
-      actualizarBotones();
-      if (estabaVacia && canciones.length > 0) {
-        cargarCancion(0, false);
-      } else {
-        pintarLista();
-      }
-    });
-
-    btnPlay.addEventListener("click", alternarReproduccion);
-    btnSiguiente.addEventListener("click", siguiente);
-    btnAnterior.addEventListener("click", anterior);
-
-    audio.addEventListener("play", () => {
-      btnPlay.textContent = "⏸";
-      btnPlay.setAttribute("aria-label", "Pausar");
-      portada.classList.add("sonando");
-    });
-
-    audio.addEventListener("pause", () => {
-      btnPlay.textContent = "▶";
-      btnPlay.setAttribute("aria-label", "Reproducir");
-      portada.classList.remove("sonando");
-    });
-
-    audio.addEventListener("loadedmetadata", () => {
-      duracion.textContent = formatearTiempo(audio.duration);
-    });
-
-    audio.addEventListener("timeupdate", () => {
-      if (!audio.duration) return;
-      progreso.value = (audio.currentTime / audio.duration) * 100;
-      tiempoActual.textContent = formatearTiempo(audio.currentTime);
-    });
-
-    audio.addEventListener("ended", siguiente);
-
-    // Saltar a otro punto de la canción
-    progreso.addEventListener("input", () => {
-      if (!audio.duration) return;
-      audio.currentTime = (progreso.value / 100) * audio.duration;
-    });
-
-    volumen.addEventListener("input", () => {
-      audio.volume = volumen.value;
-    });
-    audio.volume = volumen.value;
-
-    // Atajos de teclado: espacio = play/pausa, flechas = anterior/siguiente
-    document.addEventListener("keydown", (e) => {
-      if (e.target.tagName === "INPUT") return;
-      if (e.code === "Space") {
-        e.preventDefault();
-        alternarReproduccion();
-      } else if (e.code === "ArrowRight") {
-        siguiente();
-      } else if (e.code === "ArrowLeft") {
-        anterior();
-      }
-    });
-  </script>
+  <script src="renderer.js"></script>
 </body>
 </html>
