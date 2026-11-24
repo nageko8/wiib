@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reproductor de música</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      background: #f1f3f8;
+      font-family: Arial, sans-serif;
+      color: #202438;
+    }
+
+    .reproductor {
+      width: min(340px, calc(100% - 32px));
+      padding: 24px;
+      border-radius: 16px;
+      background: white;
+      text-align: center;
+      box-shadow: 0 8px 24px #20243818;
+    }
+
+    .portada {
+      height: 220px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #f8b195, #f67280, #c06c84);
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 22px;
+    }
+
+    p {
+      margin: 0 0 20px;
+      color: #777b8c;
+    }
+
+    audio {
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <main class="reproductor">
+    <div class="portada" aria-hidden="true"></div>
+    <h1>Nombre de la canción</h1>
+    <p>Nombre del artista</p>
+    <audio controls aria-label="Controles de reproducción"></audio>
+  </main>
+</body>
+</html>
