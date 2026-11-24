@@ -18,6 +18,7 @@
     p { margin: 4px 0 24px; font-size: 14px; color: #888; }
     input[type="range"] { width: 100%; accent-color: #222; }
     button { font: inherit; padding: 6px 12px; border: 1px solid #222; background: none; cursor: pointer; }
+    button[aria-pressed="true"] { background: #222; color: #fff; }
     button:disabled { opacity: 0.3; cursor: default; }
     ol { padding-left: 20px; font-size: 14px; }
     li { padding: 4px 0; cursor: pointer; }
@@ -37,6 +38,7 @@
     <button id="btn-anterior" disabled>Anterior</button>
     <button id="btn-play" disabled>Reproducir</button>
     <button id="btn-siguiente" disabled>Siguiente</button>
+    <button id="btn-repetir" aria-pressed="false" disabled>Repetir</button>
   </p>
 
   <p>Volumen</p>
