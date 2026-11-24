@@ -7,6 +7,7 @@ const duracion = document.getElementById("duracion");
 const btnPlay = document.getElementById("btn-play");
 const btnAnterior = document.getElementById("btn-anterior");
 const btnSiguiente = document.getElementById("btn-siguiente");
+const btnRepetir = document.getElementById("btn-repetir");
 const btnAnadir = document.getElementById("btn-anadir");
 const volumen = document.getElementById("volumen");
 const archivos = document.getElementById("archivos");
@@ -50,6 +51,7 @@ function actualizarBotones() {
   progreso.disabled = !hayCanciones;
   btnAnterior.disabled = canciones.length < 2;
   btnSiguiente.disabled = canciones.length < 2;
+  btnRepetir.disabled = !hayCanciones;
 }
 
 function cargarCancion(i, reproducir) {
@@ -88,6 +90,12 @@ function anterior() {
   cargarCancion((indiceActual - 1 + canciones.length) % canciones.length, true);
 }
 
+// Activa o desactiva la repetición de la canción actual
+function alternarRepetir() {
+  audio.loop = !audio.loop;
+  btnRepetir.setAttribute("aria-pressed", String(audio.loop));
+}
+
 btnAnadir.addEventListener("click", () => archivos.click());
 
 // Añadir canciones desde el dispositivo
@@ -108,6 +116,7 @@ archivos.addEventListener("change", () => {
 btnPlay.addEventListener("click", alternarReproduccion);
 btnSiguiente.addEventListener("click", siguiente);
 btnAnterior.addEventListener("click", anterior);
+btnRepetir.addEventListener("click", alternarRepetir);
 
 audio.addEventListener("play", () => { btnPlay.textContent = "Pausar"; });
 audio.addEventListener("pause", () => { btnPlay.textContent = "Reproducir"; });
@@ -135,7 +144,7 @@ volumen.addEventListener("input", () => {
 });
 audio.volume = volumen.value;
 
-// Atajos de teclado: espacio = play/pausa, flechas = anterior/siguiente
+// Atajos de teclado: espacio = play/pausa, flechas = anterior/siguiente, R = repetir
 document.addEventListener("keydown", (e) => {
   if (e.target.tagName === "INPUT" || e.target.tagName === "BUTTON") return;
   if (e.code === "Space") {
@@ -145,5 +154,7 @@ document.addEventListener("keydown", (e) => {
     siguiente();
   } else if (e.code === "ArrowLeft") {
     anterior();
+  } else if (e.code === "KeyR") {
+    alternarRepetir();
   }
 });

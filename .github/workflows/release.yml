@@ -37,3 +37,42 @@ jobs:
         with:
           files: dist/*.exe
           generate_release_notes: true
+
+  build-android:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: movil
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: movil/package-lock.json
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - run: npm ci
+
+      - name: Compilar .apk
+        run: |
+          npx expo prebuild --platform android --clean --no-install
+          cd android && ./gradlew assembleRelease --no-daemon
+          cp app/build/outputs/apk/release/app-release.apk "$GITHUB_WORKSPACE/Reproductor-${{ github.ref_name }}.apk"
+
+      - name: Subir artefactos
+        uses: actions/upload-artifact@v4
+        with:
+          name: reproductor-android
+          path: Reproductor-*.apk
+
+      - name: Publicar release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: Reproductor-*.apk
