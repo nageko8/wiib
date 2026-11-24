@@ -3,59 +3,50 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reproductor de música</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; media-src 'self' blob:; style-src 'self' 'unsafe-inline'; script-src 'self'">
+  <title>Reproductor</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
     body {
-      min-height: 100vh;
-      margin: 0;
-      display: grid;
-      place-items: center;
-      background: #f1f3f8;
-      font-family: Arial, sans-serif;
-      color: #202438;
+      max-width: 360px;
+      margin: 48px auto;
+      padding: 0 16px;
+      font-family: system-ui, sans-serif;
+      color: #222;
     }
 
-    .reproductor {
-      width: min(340px, calc(100% - 32px));
-      padding: 24px;
-      border-radius: 16px;
-      background: white;
-      text-align: center;
-      box-shadow: 0 8px 24px #20243818;
-    }
-
-    .portada {
-      height: 220px;
-      margin-bottom: 20px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #f8b195, #f67280, #c06c84);
-    }
-
-    h1 {
-      margin: 0 0 8px;
-      font-size: 22px;
-    }
-
-    p {
-      margin: 0 0 20px;
-      color: #777b8c;
-    }
-
-    audio {
-      width: 100%;
-    }
+    h1 { margin: 0; font-size: 24px; font-weight: 600; }
+    p { margin: 4px 0 24px; font-size: 14px; color: #888; }
+    input[type="range"] { width: 100%; accent-color: #222; }
+    button { font: inherit; padding: 6px 12px; border: 1px solid #222; background: none; cursor: pointer; }
+    button:disabled { opacity: 0.3; cursor: default; }
+    ol { padding-left: 20px; font-size: 14px; }
+    li { padding: 4px 0; cursor: pointer; }
+    .activa { font-weight: 600; }
   </style>
 </head>
 <body>
-  <main class="reproductor">
-    <div class="portada" aria-hidden="true"></div>
-    <h1>Nombre de la canción</h1>
-    <p>Nombre del artista</p>
-    <audio controls aria-label="Controles de reproducción"></audio>
-  </main>
+  <h1 id="titulo">Sin canción</h1>
+  <p id="artista">Añade archivos de audio para empezar</p>
+
+  <audio id="audio"></audio>
+
+  <input id="progreso" type="range" min="0" max="100" value="0" step="0.1" aria-label="Progreso" disabled>
+  <p><span id="tiempo-actual">0:00</span> / <span id="duracion">0:00</span></p>
+
+  <p>
+    <button id="btn-anterior" disabled>Anterior</button>
+    <button id="btn-play" disabled>Reproducir</button>
+    <button id="btn-siguiente" disabled>Siguiente</button>
+  </p>
+
+  <p>Volumen</p>
+  <input id="volumen" type="range" min="0" max="1" step="0.01" value="0.8" aria-label="Volumen">
+
+  <p><button id="btn-anadir">Añadir canciones</button></p>
+  <input id="archivos" type="file" accept="audio/*" multiple hidden>
+
+  <ol id="lista"></ol>
+
+  <script src="renderer.js"></script>
 </body>
 </html>

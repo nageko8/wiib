@@ -1,0 +1,40 @@
+{
+  "name": "wiib",
+  "productName": "Reproductor",
+  "version": "1.0.0",
+  "description": "Reproductor de música minimalista",
+  "main": "main.js",
+  "author": "nageko8",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win"
+  },
+  "build": {
+    "appId": "com.nageko8.wiib",
+    "productName": "Reproductor",
+    "files": [
+      "main.js",
+      "index.html",
+      "renderer.js",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}-portable.exe"
+    }
+  },
+  "devDependencies": {
+    "electron": "^45.4.1",
+    "electron-builder": "^26.18.0"
+  }
+}
